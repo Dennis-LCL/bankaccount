@@ -35,14 +35,14 @@ module.exports = class Account {
     if (this.transactionHistory.length === 0) {
       const emptyTransaction = [
         {
-          date: "",
+          date: new Date().toDateString(),
           debitCredit: 0,
           balance: this.balance
         }
       ];
       return emptyTransaction;
     } else {
-      console.log(this.transactionHistory);
+      // console.log(this.transactionHistory);
       return this.transactionHistory;
     }
   }
