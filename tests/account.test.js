@@ -97,7 +97,7 @@ describe("Statement", () => {
     ];
     mockDate.mockReturnValueOnce("Wed Jul 10 2019");
     // mockDate.mockReturnValueOnce("Thu Jul 11 2019");
-    myAccount.deposit(50);
+    myAccount.deposit(100);
     // myAccount.withdrawal(100);
     const myStatement = myAccount.statement();
     expect(myStatement).toMatchObject(expectedStatement);
