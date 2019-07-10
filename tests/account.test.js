@@ -1,4 +1,5 @@
 const Account = require("../src/account");
+const mockDate = jest.fn(Date());
 
 describe("Balance", () => {
   it("should show 0 when the balance in the account is 0", () => {
@@ -39,5 +40,66 @@ describe("Withdrawal", () => {
     myAccount.deposit(50);
     const responseMessage = myAccount.withdrawal(100);
     expect(responseMessage).toEqual("Not Enough Fund.");
+  });
+});
+
+describe("Statement", () => {
+  it("should show date, debit, credit and balance for new account", () => {
+    const myAccount = new Account();
+    const myStatement = myAccount.statement();
+    expect(myStatement).toMatchObject([
+      { date: "", debitCredit: 0, balance: 0 }
+    ]);
+  });
+
+  it("should list down two deposits if I make two deposits, with the deposited amount.", () => {
+    const myAccount = new Account();
+    const expectedStatement = [
+      { date: "", debitCredit: 100, balance: 100 },
+      { date: "", debitCredit: 100, balance: 200 }
+    ];
+    myAccount.deposit(100);
+    myAccount.deposit(100);
+    const myStatement = myAccount.statement();
+    expect(myStatement).toMatchObject(expectedStatement);
+  });
+
+  it("should list down one deposits and one withdrawal in my statement, if I make 100 deposit and 50 withdrawal  .", () => {
+    const myAccount = new Account();
+    const expectedStatement = [
+      { date: "", debitCredit: 100, balance: 100 },
+      { date: "", debitCredit: -50, balance: 50 }
+    ];
+    myAccount.deposit(100);
+    myAccount.withdrawal(50);
+    const myStatement = myAccount.statement();
+    expect(myStatement).toMatchObject(expectedStatement);
+  });
+
+  it("should not show a failed withdrawal in the statement.", () => {
+    const myAccount = new Account();
+    const expectedStatement = [
+      { date: "", debitCredit: 100, balance: 100 },
+      { date: "", debitCredit: -50, balance: 50 }
+    ];
+    myAccount.deposit(100);
+    myAccount.withdrawal(50);
+    myAccount.withdrawal(100);
+    const myStatement = myAccount.statement();
+    expect(myStatement).toMatchObject(expectedStatement);
+  });
+
+  it.only("should list transactions in chronological order from oldest to newest.", () => {
+    const myAccount = new Account();
+    const expectedStatement = [
+      { date: "Wed Jul 10 2019", debitCredit: 100, balance: 100 }
+      // { date: "Thu Jul 11 2019", debitCredit: -50, balance: 50 }
+    ];
+    mockDate.mockReturnValueOnce("Wed Jul 10 2019");
+    // mockDate.mockReturnValueOnce("Thu Jul 11 2019");
+    myAccount.deposit(50);
+    // myAccount.withdrawal(100);
+    const myStatement = myAccount.statement();
+    expect(myStatement).toMatchObject(expectedStatement);
   });
 });
